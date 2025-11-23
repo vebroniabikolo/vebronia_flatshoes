@@ -640,154 +640,187 @@ const PRODUCTS = [
   },
 ];
 
+const ADMIN_WA_NUMBER = "6282146502146"; 
+
 // cart state: array of {id,name,price,color,size,qty,subtotal,img}
 let cart = [];
 
 // UI refs
-  const grid = document.getElementById('productGrid');
-  const searchInput = document.getElementById('search');
-  const priceRange = document.getElementById('priceRange');
-  const priceLabel = document.getElementById('priceLabel');
-  const categorySelect = document.getElementById('category');
-  const sizeFiltersWrap = document.getElementById('sizeFilters');
-  const resetFiltersBtn = document.getElementById('resetFilters');
+  const grid = document.getElementById('productGrid');
+  const searchInput = document.getElementById('search');
+  const priceRange = document.getElementById('priceRange');
+  const priceLabel = document.getElementById('priceLabel');
+  const categorySelect = document.getElementById('category');
+  const sizeFiltersWrap = document.getElementById('sizeFilters');
+  const resetFiltersBtn = document.getElementById('resetFilters');
 
-  // REFERENCE BARU UNTUK ELEMENT DRAWER (MODAL)
-  const modalBackdrop = document.getElementById('modalBackdrop');
-  const modalEl = document.getElementById('modalEl'); // PENTING: ID BARU PADA DIV CLASS="modal"
-  const modalClose = document.getElementById('modalClose');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalPrice = document.getElementById('modalPrice');
-  const modalDesc = document.getElementById('modalDesc');
+  // REFERENCE BARU UNTUK ELEMENT DRAWER (MODAL)
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const modalEl = document.getElementById('modalEl'); // PENTING: ID BARU PADA DIV CLASS="modal"
+  const modalClose = document.getElementById('modalClose');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalPrice = document.getElementById('modalPrice');
+  const modalDesc = document.getElementById('modalDesc');
 
-  // GALERI/SWIPE REFS BARU
-  const modalImgWrap = document.getElementById('modalImgWrap');
-  const modalScroller = document.getElementById('modalImgScroller'); // <-- REFFERENSI SCROLLER BARU
-  
-  const modalColors = document.getElementById('modalColors');
-  const modalSizes = document.getElementById('modalSizes');
-  const modalAdd = document.getElementById('modalAdd');
-  const modalBuy = document.getElementById('modalBuy');
-  const qtyMinus = document.getElementById('qtyMinus');
-  const qtyPlus = document.getElementById('qtyPlus');
-  const qtyVal = document.getElementById('qtyVal');
-  const cartCount = document.getElementById('cartCount');
-  const cartBtn = document.getElementById('cartBtn');
-  const modalCat = document.getElementById('modalCat'); 
+  // GALERI/SWIPE REFS BARU
+  const modalImgWrap = document.getElementById('modalImgWrap');
+  const modalScroller = document.getElementById('modalImgScroller'); // <-- REFFERENSI SCROLLER BARU
+  
+  const modalColors = document.getElementById('modalColors');
+  const modalSizes = document.getElementById('modalSizes');
+  const modalAdd = document.getElementById('modalAdd');
+  const modalBuy = document.getElementById('modalBuy');
+  const qtyMinus = document.getElementById('qtyMinus');
+  const qtyPlus = document.getElementById('qtyPlus');
+  const qtyVal = document.getElementById('qtyVal');
+  const cartCount = document.getElementById('cartCount');
+  const cartBtn = document.getElementById('cartBtn');
+  const modalCat = document.getElementById('modalCat'); 
 
-  // NEW Modal Refs (Tabs)
-  const modalStock = document.getElementById('modalStock');
-  const modalDetail = document.getElementById('modalDetail');
-  const modalGuide = document.getElementById('modalGuide');
-  const modalDescTab = document.getElementById('modalDescTab');
-  const modalDetailTab = document.getElementById('modalDetailTab');
-  const modalGuideTab = document.getElementById('modalGuideTab');
+  // NEW Modal Refs (Tabs)
+  const modalStock = document.getElementById('modalStock');
+  const modalDetail = document.getElementById('modalDetail');
+  const modalGuide = document.getElementById('modalGuide');
+  const modalDescTab = document.getElementById('modalDescTab');
+  const modalDetailTab = document.getElementById('modalDetailTab');
+  const modalGuideTab = document.getElementById('modalGuideTab');
 
-  // Cart Drawer Refs
-  const cartDrawer = document.getElementById('cartDrawer');
-  const cartItemsWrap = document.getElementById('cartItems');
-  const cartTotalEl = document.getElementById('cartTotal');
-  const clearCartBtn = document.getElementById('clearCartBtn');
-  const closeCartBtn = document.getElementById('closeCartBtn');
-  const closeCartBtn2 = document.getElementById('closeCartBtn2');
-  const checkoutBtn = document.getElementById('checkoutBtn');
+  // Cart Drawer Refs
+  const cartDrawer = document.getElementById('cartDrawer');
+  const cartItemsWrap = document.getElementById('cartItems');
+  const cartTotalEl = document.getElementById('cartTotal');
+  const clearCartBtn = document.getElementById('clearCartBtn');
+  const closeCartBtn = document.getElementById('closeCartBtn');
+  const closeCartBtn2 = document.getElementById('closeCartBtn2');
+  const checkoutBtn = document.getElementById('checkoutBtn');
 
-  // Filter state
-  let activeSizes = new Set();
-  let activeCategory = 'all';
-  let maxPrice = Number(priceRange.value);
-  priceLabel.innerText = `Sampai: ${fmt(maxPrice)}`;
+  // Filter state
+  let activeSizes = new Set();
+  let activeCategory = 'all';
+  let maxPrice = Number(priceRange.value);
+  priceLabel.innerText = `Sampai: ${fmt(maxPrice)}`;
 
-  // NEW Modal State
-  let currentProduct = null;
-  
-  // SWIPE STATE BARU
-  let currentImgIndex = 0; 
-  let currentImages = []; 
+  // NEW Modal State
+  let currentProduct = null;
+  
+  // SWIPE STATE BARU
+  let currentImgIndex = 0; 
+  let currentImages = []; 
 
-  // Variabel untuk Swipe Sentuh
-  let touchstartX = 0;
-  let touchendX = 0;
-  const SWIPE_THRESHOLD = 50; 
-  
-  let currentSelectedColor = null; // New state for selected color object { name: N, hex: N, image: N }
-  let currentSelectedSizeData = null; // { size: N, price: N, stock: N }
-  let currentSelectedSize = null;
-  let currentQty = 1;
+  // Variabel untuk Swipe Sentuh
+  let touchstartX = 0;
+  let touchendX = 0;
+  const SWIPE_THRESHOLD = 50; 
+  
+  let currentSelectedColor = null; // New state for selected color object { name: N, hex: N, image: N }
+  let currentSelectedSizeData = null; // { size: N, price: N, stock: N }
+  let currentSelectedSize = null;
+  let currentQty = 1;
+
+// ===================================================================
+// FUNGSI BARU: GENERATE WHATSAPP LINK
+// ===================================================================
+
+function generateWhatsAppLink(cartItems, isSingleItem = false) {
+    let message = isSingleItem ? 
+        "Halo, saya ingin memesan produk berikut:\n\n" : 
+        "Halo Vebronia, saya ingin melakukan checkout pesanan dengan rincian:\n\n";
+    let total = 0;
+
+    cartItems.forEach((item, index) => {
+        // Harga (ci.price) sudah tersedia di item keranjang/single item
+        const itemPrice = item.price || item.subtotal / item.qty;
+        const subtotal = item.qty * itemPrice;
+        total += subtotal;
+
+        message += `${index + 1}. *${item.name}* (${item.color}) - Size ${item.size}\n`;
+        message += `   Qty: ${item.qty} × ${fmt(itemPrice)}\n`; 
+        message += `   Subtotal: ${fmt(subtotal)}\n`;
+    });
+
+    if (!isSingleItem) {
+        message += `\n--- Total Pesanan: ${fmt(total)} ---\n`;
+        message += "\nMohon konfirmasi ketersediaan stok, total pembayaran, dan ongkos kirim. Terima kasih.";
+    } else {
+        message += "\nMohon konfirmasi ketersediaan stok, total harga, dan ongkos kirim. Terima kasih.";
+    }
+
+    return `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(message)}`;
+}
 
 // load cart from localStorage if present
 function loadCart(){
-  try{
-    const raw = localStorage.getItem('aurora_cart_v1');
-    if(raw){
-      cart = JSON.parse(raw);
-    } else cart = [];
-  }catch(e){
-    cart = [];
-  }
+  try{
+    const raw = localStorage.getItem('aurora_cart_v1');
+    if(raw){
+      cart = JSON.parse(raw);
+    } else cart = [];
+  }catch(e){
+    cart = [];
+  }
 }
 function saveCart(){
-  localStorage.setItem('aurora_cart_v1', JSON.stringify(cart));
+  localStorage.setItem('aurora_cart_v1', JSON.stringify(cart));
 }
 
 // MODIFIED: Fungsi untuk mencari data ukuran spesifik (harga & stok)
 // Sekarang hanya mencari di sizeVariants, karena harga/stok tidak bergantung pada warna
 function findSizeData(product, colorName, size) {
-    if (!product.sizeVariants) return null;
-    return product.sizeVariants.find(s => String(s.size) === String(size));
+    if (!product.sizeVariants) return null;
+    return product.sizeVariants.find(s => String(s.size) === String(size));
 }
 
 // NEW: Fungsi untuk mendapatkan rentang harga
 function getPriceRange(product) {
-    // FIX: Menggunakan product.sizeVariants BUKAN product.variants
-    if (!product.sizeVariants || product.sizeVariants.length === 0) return fmt(0);
-    
-    // FIX: Ambil harga langsung dari sizeVariants
-    const allPrices = product.sizeVariants.map(s => s.price);
-    
-    if (allPrices.length === 0) return fmt(0);
-    const min = Math.min(...allPrices);
-    const max = Math.max(...allPrices);
-    return min === max ? fmt(min) : `${fmt(min)} - ${fmt(max)}`;
+    // FIX: Menggunakan product.sizeVariants BUKAN product.variants
+    if (!product.sizeVariants || product.sizeVariants.length === 0) return fmt(0);
+    
+    // FIX: Ambil harga langsung dari sizeVariants
+    const allPrices = product.sizeVariants.map(s => s.price);
+    
+    if (allPrices.length === 0) return fmt(0);
+    const min = Math.min(...allPrices);
+    const max = Math.max(...allPrices);
+    return min === max ? fmt(min) : `${fmt(min)} - ${fmt(max)}`;
 }
 
 // MODIFIED: populate size filters from product sizes (unique)
 // Menggunakan sizeVariants dari semua produk
 const allSizes = Array.from(new Set(PRODUCTS.flatMap(p => p.sizeVariants.map(s => s.size)))).sort((a,b)=>a-b);
 allSizes.forEach(size=>{
-  const btn = document.createElement('button');
-  btn.className = 'size-btn';
-  btn.innerText = size;
-  btn.dataset.size = size;
-  btn.onclick = ()=>{
-    if(activeSizes.has(String(size))) { activeSizes.delete(String(size)); btn.classList.remove('selected'); }
-    else { activeSizes.add(String(size)); btn.classList.add('selected'); }
-    applyFilters();
-  };
-  sizeFiltersWrap.appendChild(btn);
+  const btn = document.createElement('button');
+  btn.className = 'size-btn';
+  btn.innerText = size;
+  btn.dataset.size = size;
+  btn.onclick = ()=>{
+    if(activeSizes.has(String(size))) { activeSizes.delete(String(size)); btn.classList.remove('selected'); }
+    else { activeSizes.add(String(size)); btn.classList.add('selected'); }
+    applyFilters();
+  };
+  sizeFiltersWrap.appendChild(btn);
 });
 
 // price range change
 priceRange.addEventListener('input', e=>{
-  maxPrice = Number(e.target.value);
-  priceLabel.innerText = `Sampai: ${fmt(maxPrice)}`;
-  applyFilters();
+  maxPrice = Number(e.target.value);
+  priceLabel.innerText = `Sampai: ${fmt(maxPrice)}`;
+  applyFilters();
 });
 
 categorySelect.addEventListener('change', e=>{
-  activeCategory = e.target.value;
-  applyFilters();
+  activeCategory = e.target.value;
+  applyFilters();
 });
 
 resetFiltersBtn.addEventListener('click', ()=>{
-  activeSizes.clear();
-  document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('selected'));
-  categorySelect.value = 'all';
-  priceRange.value = priceRange.max;
-  maxPrice = Number(priceRange.value);
-  priceLabel.innerText = `Sampai: ${fmt(maxPrice)}`;
-  searchInput.value = '';
-  applyFilters();
+  activeSizes.clear();
+  document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('selected'));
+  categorySelect.value = 'all';
+  priceRange.value = priceRange.max;
+  maxPrice = Number(priceRange.value);
+  priceLabel.innerText = `Sampai: ${fmt(maxPrice)}`;
+  searchInput.value = '';
+  applyFilters();
 });
 
 // search
@@ -795,409 +828,424 @@ searchInput.addEventListener('input', ()=> applyFilters());
 
 // render products with click to open modal
 function renderProducts(list){
-  grid.innerHTML = "";
-  // ... (kode list.length === 0)
-  list.forEach(p=>{
-    const card = document.createElement('div');
-    card.className = 'card';
-    const priceDisplay = getPriceRange(p); 
-    
-    // Kode HTML kartu dikembalikan ke format yang menggunakan p.thumbnail
-    card.innerHTML = `
-      <div class="thumb"> <img src="${p.thumbnail}" alt="${p.name} image" draggable="false">
-      </div>
-      <div class="meta">
-        <div>
-          <div class="product-name">${p.name}</div>
-          <div style="font-size:0.86rem;color:var(--gold);opacity:0.8">Kategori: ${p.category || 'N/A'}</div> 
-        </div>
-        <div class="price">${priceDisplay}</div>
-      </div>
-      <button class="add" data-id="${p.id}">Detail & Beli</button>
-    `;
+  grid.innerHTML = "";
+  // ... (kode list.length === 0)
+  list.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const priceDisplay = getPriceRange(p); 
+    
+    // Kode HTML kartu dikembalikan ke format yang menggunakan p.thumbnail
+    card.innerHTML = `
+      <div class="thumb"> <img src="${p.thumbnail}" alt="${p.name} image" draggable="false">
+      </div>
+      <div class="meta">
+        <div>
+          <div class="product-name">${p.name}</div>
+          <div style="font-size:0.86rem;color:var(--gold);opacity:0.8">Kategori: ${p.category || 'N/A'}</div> 
+        </div>
+        <div class="price">${priceDisplay}</div>
+      </div>
+      <button class="add" data-id="${p.id}">Detail & Beli</button>
+    `;
 
-    // card click opens detail modal (except clicking add button or swiping/clicking image)
-    card.addEventListener('click', (ev)=>{
-      // Tambahkan ev.target.tagName === 'IMG' agar klik pada gambar (saat swipe) tidak membuka modal
-      if(ev.target && (ev.target.classList.contains('add') || ev.target.tagName === 'IMG')) return; 
-      openModal(p.id);
-    });
-    // add button — now opens modal (require selection)
-    card.querySelector('.add').addEventListener('click', (ev)=>{
-      ev.stopPropagation();
-      openModal(p.id);
-    });
-    grid.appendChild(card);
-  });
+    // card click opens detail modal (except clicking add button or swiping/clicking image)
+    card.addEventListener('click', (ev)=>{
+      // Tambahkan ev.target.tagName === 'IMG' agar klik pada gambar (saat swipe) tidak membuka modal
+      if(ev.target && (ev.target.classList.contains('add') || ev.target.tagName === 'IMG')) return; 
+      openModal(p.id);
+    });
+    // add button — now opens modal (require selection)
+    card.querySelector('.add').addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      openModal(p.id);
+    });
+    grid.appendChild(card);
+  });
 }
 
 // apply filters + search
 function applyFilters(){
-  const q = searchInput.value.trim().toLowerCase();
-  let filtered = PRODUCTS.filter(p => {
-    // FIX 1: Menggunakan p.sizeVariants untuk filter harga (CRITICAL FIX)
-    const maxVariantPrice = Math.max(...p.sizeVariants.map(s => s.price));
-    return maxVariantPrice <= maxPrice;
-  });
-  
-  if(activeCategory !== 'all') filtered = filtered.filter(p => p.category === activeCategory);
-  
-  if(activeSizes.size > 0){
-    // FIX 2: Menggunakan p.sizeVariants untuk filter ukuran
-    filtered = filtered.filter(p => p.sizeVariants.some(s => activeSizes.has(String(s.size))));
-  }
-  
-  // FIX 3: Menggunakan p.description, bukan p.desc (sesuai data Anda)
-  if(q) filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)));
-  
-  renderProducts(filtered);
+  const q = searchInput.value.trim().toLowerCase();
+  let filtered = PRODUCTS.filter(p => {
+    // FIX 1: Menggunakan p.sizeVariants untuk filter harga (CRITICAL FIX)
+    const maxVariantPrice = Math.max(...p.sizeVariants.map(s => s.price));
+    return maxVariantPrice <= maxPrice;
+  });
+  
+  if(activeCategory !== 'all') filtered = filtered.filter(p => p.category === activeCategory);
+  
+  if(activeSizes.size > 0){
+    // FIX 2: Menggunakan p.sizeVariants untuk filter ukuran
+    filtered = filtered.filter(p => p.sizeVariants.some(s => activeSizes.has(String(s.size))));
+  }
+  
+  // FIX 3: Menggunakan p.description, bukan p.desc (sesuai data Anda)
+  if(q) filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)));
+  
+  renderProducts(filtered);
 }
 
 // FUNGSI BARU DARI PERMINTAAN USER: Menangani pemilihan ukuran di Modal/Drawer
 function handleSizeSelection(productId, selectedSize) {
-    // 1. Cari Produk
-    const product = PRODUCTS.find(p => p.id === productId);
-    if (!product) return;
+    // 1. Cari Produk
+    const product = PRODUCTS.find(p => p.id === productId);
+    if (!product) return;
 
-    // 2. Cari Objek Varian Ukuran yang sesuai dari sizeVariants
-    const sizeData = product.sizeVariants.find(sv => String(sv.size) === String(selectedSize));
+    // 2. Cari Objek Varian Ukuran yang sesuai dari sizeVariants
+    const sizeData = product.sizeVariants.find(sv => String(sv.size) === String(selectedSize));
 
-    // 3. Update Tampilan Harga & Stok
-    if (sizeData) {
-        currentSelectedSize = selectedSize;
+    // 3. Update Tampilan Harga & Stok
+    if (sizeData) {
+        currentSelectedSize = selectedSize;
 
-        // Panggil fungsi update untuk merender DOM
-        updateModalPriceAndStock(sizeData);
+        // Panggil fungsi update untuk merender DOM
+        updateModalPriceAndStock(sizeData);
 
-        // Update tampilan tombol ukuran (selection)
-        document.querySelectorAll('#modalSizes .size-btn').forEach(x => x.classList.remove('selected'));
-        // NOTE: Harus ada elemen tombol dengan data-size yang sesuai di HTML modal
-        const selectedButton = document.querySelector(`#modalSizes .size-btn[data-size="${selectedSize}"]`);
-        if (selectedButton) {
-             selectedButton.classList.add('selected');
-        }
+        // Update tampilan tombol ukuran (selection)
+        document.querySelectorAll('#modalSizes .size-btn').forEach(x => x.classList.remove('selected'));
+        // NOTE: Harus ada elemen tombol dengan data-size yang sesuai di HTML modal
+        const selectedButton = document.querySelector(`#modalSizes .size-btn[data-size="${selectedSize}"]`);
+        if (selectedButton) {
+             selectedButton.classList.add('selected');
+        }
 
-    } else {
-        // Jika ukuran tidak ditemukan (harusnya tidak terjadi)
-        updateModalPriceAndStock(null);
-        document.getElementById('modalStock').innerText = 'Data ukuran tidak valid.';
-    }
+    } else {
+        // Jika ukuran tidak ditemukan (harusnya tidak terjadi)
+        updateModalPriceAndStock(null);
+        document.getElementById('modalStock').innerText = 'Data ukuran tidak valid.';
+    }
 }
 
 
 // NEW: Fungsi untuk update harga dan stok di modal
 function updateModalPriceAndStock(sizeData){
-    if(sizeData){
-        currentSelectedSizeData = sizeData;
-        modalPrice.innerText = fmt(sizeData.price);
-        
-        qtyPlus.disabled = sizeData.stock === 0 || currentQty >= sizeData.stock;
-        
-        // Reset Qty jika melebihi stok yang baru dipilih
-        if(currentQty > sizeData.stock) currentQty = sizeData.stock > 0 ? 1 : 0;
-        
-        modalStock.innerHTML = sizeData.stock > 0 
-            ? `<span style="color:var(--cyan);font-weight:700;">Tersedia (${sizeData.stock})</span>`
-            : `<span style="color:var(--purple);font-weight:700;">Stok Habis</span>`;
-        modalAdd.disabled = sizeData.stock === 0;
-        modalBuy.disabled = sizeData.stock === 0;
-    } else {
-        currentSelectedSizeData = null;
-        modalPrice.innerText = 'IDR —';
-        modalStock.innerHTML = `<span style="color:var(--gold);opacity:0.8;">Pilih ukuran</span>`;
-        modalAdd.disabled = true;
-        modalBuy.disabled = true;
-        qtyPlus.disabled = true;
-    }
-    // Perbarui tombol +/- qty
-    qtyMinus.disabled = currentQty <= 1;
-    qtyVal.innerText = currentQty;
+    if(sizeData){
+        currentSelectedSizeData = sizeData;
+        modalPrice.innerText = fmt(sizeData.price);
+        
+        qtyPlus.disabled = sizeData.stock === 0 || currentQty >= sizeData.stock;
+        
+        // Reset Qty jika melebihi stok yang baru dipilih
+        if(currentQty > sizeData.stock) currentQty = sizeData.stock > 0 ? 1 : 0;
+        
+        modalStock.innerHTML = sizeData.stock > 0 
+            ? `<span style="color:var(--cyan);font-weight:700;">Tersedia (${sizeData.stock})</span>`
+            : `<span style="color:var(--purple);font-weight:700;">Stok Habis</span>`;
+        modalAdd.disabled = sizeData.stock === 0;
+        modalBuy.disabled = sizeData.stock === 0;
+    } else {
+        currentSelectedSizeData = null;
+        modalPrice.innerText = 'IDR —';
+        modalStock.innerHTML = `<span style="color:var(--gold);opacity:0.8;">Pilih ukuran</span>`;
+        modalAdd.disabled = true;
+        modalBuy.disabled = true;
+        qtyPlus.disabled = true;
+    }
+    // Perbarui tombol +/- qty
+    qtyMinus.disabled = currentQty <= 1;
+    qtyVal.innerText = currentQty;
 }
 
 // MODIFIED: Fungsi untuk render ukuran (Hanya menggunakan sizeVariants)
 function renderModalSizes(product){
-    modalSizes.innerHTML = "";
-    currentSelectedSizeData = null;
-    currentSelectedSize = null;
-    currentQty = 1; // Reset Qty
-    
-    if(product.sizeVariants.length > 0){
-        product.sizeVariants.forEach((sizeData)=>{
-            const s = sizeData.size;
-            const b = document.createElement('button');
-            b.className = 'size-btn';
-            b.innerText = s;
-            b.dataset.size = s;
-            
-            if(sizeData.stock === 0) {
-                b.style.opacity = '0.5';
-                b.style.textDecoration = 'line-through';
-                b.disabled = true;
-            }
-            
-            // PENTING: Gunakan fungsi handleSizeSelection untuk menangani klik ukuran
-            b.onclick = ()=>{
-                handleSizeSelection(product.id, s);
-            };
-            modalSizes.appendChild(b);
-        });
-    } else {
-        modalSizes.innerHTML = '<div class="muted">Ukuran tidak tersedia</div>';
-    }
-    // Update harga/stok default (none selected)
-    updateModalPriceAndStock(null);
+    modalSizes.innerHTML = "";
+    currentSelectedSizeData = null;
+    currentSelectedSize = null;
+    currentQty = 1; // Reset Qty
+    
+    if(product.sizeVariants.length > 0){
+        product.sizeVariants.forEach((sizeData)=>{
+            const s = sizeData.size;
+            const b = document.createElement('button');
+            b.className = 'size-btn';
+            b.innerText = s;
+            b.dataset.size = s;
+            
+            if(sizeData.stock === 0) {
+                b.style.opacity = '0.5';
+                b.style.textDecoration = 'line-through';
+                b.disabled = true;
+            }
+            
+            // PENTING: Gunakan fungsi handleSizeSelection untuk menangani klik ukuran
+            b.onclick = ()=>{
+                handleSizeSelection(product.id, s);
+            };
+            modalSizes.appendChild(b);
+        });
+    } else {
+        modalSizes.innerHTML = '<div class="muted">Ukuran tidak tersedia</div>';
+    }
+    // Update harga/stok default (none selected)
+    updateModalPriceAndStock(null);
 }
 
 // NEW: Fungsi untuk mengaktifkan tab di modal
 function setActiveTab(activeEl, contentEl){
-  // Reset semua tab
-  [modalDescTab, modalDetailTab, modalGuideTab].forEach(t => {
-      t.classList.remove('selected');
-      t.style.fontWeight = 600;
-      t.style.borderBottom = '2px solid transparent';
-  });
-  [modalDesc, modalDetail, modalGuide].forEach(c => c.style.display = 'none');
-  
-  // Aktifkan tab yang dipilih
-  activeEl.classList.add('selected');
-  activeEl.style.fontWeight = 700;
-  activeEl.style.borderBottom = '2px solid var(--cyan)';
-  contentEl.style.display = 'block';
+  // Reset semua tab
+  [modalDescTab, modalDetailTab, modalGuideTab].forEach(t => {
+      t.classList.remove('selected');
+      t.style.fontWeight = 600;
+      t.style.borderBottom = '2px solid transparent';
+  });
+  [modalDesc, modalDetail, modalGuide].forEach(c => c.style.display = 'none');
+  
+  // Aktifkan tab yang dipilih
+  activeEl.classList.add('selected');
+  activeEl.style.fontWeight = 700;
+  activeEl.style.borderBottom = '2px solid var(--cyan)';
+  contentEl.style.display = 'block';
 }
 
 
 // MODIFIED: FUNGSI openModal DIUBAH AGAR SESUAI DENGAN STRUKTUR BARU
 function openModal(id){
-  const p = PRODUCTS.find(x=>x.id===id);
-  if(!p) return;
-  
-  currentProduct = p;
-  currentSelectedColor = p.colors[0]; // Set default warna pertama
-  currentSelectedSizeData = null;
-  currentSelectedSize = null;
-  currentQty = 1;
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  
+  currentProduct = p;
+  currentSelectedColor = p.colors[0]; // Set default warna pertama
+  currentSelectedSizeData = null;
+  currentSelectedSize = null;
+  currentQty = 1;
 
-  // fill modal
-  modalTitle.innerText = p.name;
-  modalCat.innerText = p.category;
-  
-  // PERUBAHAN: Membuat galeri gambar (swipeable) dari semua gambar varian warna
-  const modalImagesHtml = p.colors.map(c => 
-      `<img src="${c.image}" alt="${p.name} - ${c.name} image">`
-  ).join('');
+  // fill modal
+  modalTitle.innerText = p.name;
+  modalCat.innerText = p.category;
+  
+  // PERUBAHAN: Membuat galeri gambar (swipeable) dari semua gambar varian warna
+  const modalImagesHtml = p.colors.map(c => 
+      `<img src="${c.image}" alt="${p.name} - ${c.name} image">`
+  ).join('');
 
-  // modalImgWrap sekarang menjadi container scroller
-  modalImgWrap.innerHTML = `<div class="scroller" id="modalImageScroller" style="height:100%; width:100%;">${modalImagesHtml}</div>`; 
-  
-  // Set konten detail produk
-  modalDesc.innerText = p.description;
-  modalDetail.innerText = p.detail;
-  modalGuide.innerText = p.guide;
-  setActiveTab(modalDescTab, modalDesc); // Set tab default
-  
-  // colors
-  modalColors.innerHTML = "";
-  // Iterasi melalui p.colors (bukan p.variants)
-  p.colors.forEach((c, idx)=>{
-    const sw = document.createElement('div');
-    sw.className = 'color-swatch';
-    sw.title = c.name;
-    sw.style.background = c.hex;
-    sw.dataset.color = c.name;
-    if(idx===0) sw.classList.add('selected');
-    sw.addEventListener('click', ()=>{
-      document.querySelectorAll('.color-swatch').forEach(n=>n.classList.remove('selected'));
-      sw.classList.add('selected');
-      currentSelectedColor = c;
-      
-      // Pindah posisi scroller gambar ke gambar warna yang sesuai
-      const scroller = document.getElementById('modalImageScroller');
-      if (scroller) {
-          const imageIndex = p.colors.findIndex(color => color.name === c.name);
-          scroller.scrollLeft = scroller.offsetWidth * imageIndex; 
-      }
-      
-      // Tidak perlu merender ulang ukuran, tetapi bisa mereset pilihan
-      // renderModalSizes(p); // (Opsional: Mereset pilihan ukuran saat ganti warna)
-      // Jika tidak direset, kita hanya perlu menghapus pilihan yang ada:
-      document.querySelectorAll('#modalSizes .size-btn').forEach(x=>x.classList.remove('selected'));
-      updateModalPriceAndStock(null);
-    });
-    modalColors.appendChild(sw);
-  });
+  // modalImgWrap sekarang menjadi container scroller
+  modalImgWrap.innerHTML = `<div class="scroller" id="modalImageScroller" style="height:100%; width:100%;">${modalImagesHtml}</div>`; 
+  
+  // Set konten detail produk
+  modalDesc.innerText = p.description;
+  modalDetail.innerText = p.detail;
+  modalGuide.innerText = p.guide;
+  setActiveTab(modalDescTab, modalDesc); // Set tab default
+  
+  // colors
+  modalColors.innerHTML = "";
+  // Iterasi melalui p.colors (bukan p.variants)
+  p.colors.forEach((c, idx)=>{
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch';
+    sw.title = c.name;
+    sw.style.background = c.hex;
+    sw.dataset.color = c.name;
+    if(idx===0) sw.classList.add('selected');
+    sw.addEventListener('click', ()=>{
+      document.querySelectorAll('.color-swatch').forEach(n=>n.classList.remove('selected'));
+      sw.classList.add('selected');
+      currentSelectedColor = c;
+      
+      // Pindah posisi scroller gambar ke gambar warna yang sesuai
+      const scroller = document.getElementById('modalImageScroller');
+      if (scroller) {
+          const imageIndex = p.colors.findIndex(color => color.name === c.name);
+          scroller.scrollLeft = scroller.offsetWidth * imageIndex; 
+      }
+      
+      // Tidak perlu merender ulang ukuran, tetapi bisa mereset pilihan
+      // renderModalSizes(p); // (Opsional: Mereset pilihan ukuran saat ganti warna)
+      // Jika tidak direset, kita hanya perlu menghapus pilihan yang ada:
+      document.querySelectorAll('#modalSizes .size-btn').forEach(x=>x.classList.remove('selected'));
+      updateModalPriceAndStock(null);
+    });
+    modalColors.appendChild(sw);
+  });
 
-  // Initial size render and price/stock update
-  // MODIFIED: Panggil renderModalSizes tanpa varian group
-  renderModalSizes(p);
-  
-  // Qty handlers (updated to check stock)
-  qtyMinus.onclick = ()=>{
-    if(currentQty > 1) currentQty--;
-    updateModalPriceAndStock(currentSelectedSizeData);
-  };
-  qtyPlus.onclick = ()=>{
-    if(currentSelectedSizeData && currentQty < currentSelectedSizeData.stock) currentQty++;
-    updateModalPriceAndStock(currentSelectedSizeData);
-  };
+  // Initial size render and price/stock update
+  // MODIFIED: Panggil renderModalSizes tanpa varian group
+  renderModalSizes(p);
+  
+  // Qty handlers (updated to check stock)
+  qtyMinus.onclick = ()=>{
+    if(currentQty > 1) currentQty--;
+    updateModalPriceAndStock(currentSelectedSizeData);
+  };
+  qtyPlus.onclick = ()=>{
+    if(currentSelectedSizeData && currentQty < currentSelectedSizeData.stock) currentQty++;
+    updateModalPriceAndStock(currentSelectedSizeData);
+  };
 
-  // LOGIC BARU UNTUK DRAWER
-  modalBackdrop.classList.add('open');
-  modalEl.classList.add('open');
-  modalBackdrop.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
+  // LOGIC BARU UNTUK DRAWER
+  modalBackdrop.classList.add('open');
+  modalEl.classList.add('open');
+  modalBackdrop.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
 }
 
 // FUNGSI closeModal DIUBAH MENJADI CLOSE DRAWER
 function closeModal(){
-  modalBackdrop.classList.remove('open');
-  modalEl.classList.remove('open');
-  // Beri jeda agar animasi selesai sebelum menghapus overflow
-  setTimeout(() => {
-      modalBackdrop.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-      currentProduct = null;
-  }, 400); 
+  modalBackdrop.classList.remove('open');
+  modalEl.classList.remove('open');
+  // Beri jeda agar animasi selesai sebelum menghapus overflow
+  setTimeout(() => {
+      modalBackdrop.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      currentProduct = null;
+  }, 400); 
 }
 
 // ===================================================================
-  // === LOGIKA GALERI GAMBAR & SWIPE SENTUH BARU ===
-  // ===================================================================
+  // === LOGIKA GALERI GAMBAR & SWIPE SENTUH BARU ===
+  // ===================================================================
 
-  // Fungsi untuk menggeser gambar (dipanggil oleh tombol navigasi dan swipe)
-  function slideImg(n) {
-    let nextIndex = currentImgIndex + n;
+  // Fungsi untuk menggeser gambar (dipanggil oleh tombol navigasi dan swipe)
+  function slideImg(n) {
+    let nextIndex = currentImgIndex + n;
 
-    if (nextIndex >= currentImages.length) {
-      nextIndex = 0; // Kembali ke gambar pertama
-    } else if (nextIndex < 0) {
-      nextIndex = currentImages.length - 1; // Kembali ke gambar terakhir
-    }
-    
-    currentImgIndex = nextIndex;
-    
-    // Geser wadah gambar (modalImgWrap)
-    const offset = -currentImgIndex * 100;
-    modalImgWrap.style.transform = `translateX(${offset}%)`;
-  }
+    if (nextIndex >= currentImages.length) {
+      nextIndex = 0; // Kembali ke gambar pertama
+    } else if (nextIndex < 0) {
+      nextIndex = currentImages.length - 1; // Kembali ke gambar terakhir
+    }
+    
+    currentImgIndex = nextIndex;
+    
+    // Geser wadah gambar (modalImgWrap)
+    // NOTE: modalImgWrap seharusnya hanya menjadi container
+    const scroller = document.getElementById('modalImageScroller');
+    if(scroller) {
+        const offset = currentImgIndex * scroller.offsetWidth;
+        scroller.scrollLeft = offset;
+    }
+    // Update warna terpilih agar sinkron dengan gambar
+    if(currentProduct && currentProduct.colors[currentImgIndex]) {
+        currentSelectedColor = currentProduct.colors[currentImgIndex];
+        document.querySelectorAll('.color-swatch').forEach(n=>n.classList.remove('selected'));
+        const selectedSwatch = document.querySelector(`.color-swatch[data-color="${currentSelectedColor.name}"]`);
+        if (selectedSwatch) selectedSwatch.classList.add('selected');
+    }
+  }
 
-  // --- LOGIKA SWIPE SENTUH (LISTENERS) ---
+  // --- LOGIKA SWIPE SENTUH (LISTENERS) ---
 
-  // Tambahkan listener untuk mendeteksi awal sentuhan
-  if (modalScroller) {
-    modalScroller.addEventListener('touchstart', e => {
-      touchstartX = e.changedTouches[0].screenX;
-    }, false);
+  // Tambahkan listener untuk mendeteksi awal sentuhan
+  if (modalImgWrap) { // Use modalImgWrap as the touch listener container
+    modalImgWrap.addEventListener('touchstart', e => {
+      touchstartX = e.changedTouches[0].screenX;
+      // Perbarui currentImages di sini
+      currentImages = Array.from(modalImgWrap.querySelector('#modalImageScroller')?.children || []);
+    }, false);
 
-    // Tambahkan listener untuk mendeteksi akhir sentuhan
-    modalScroller.addEventListener('touchend', e => {
-      touchendX = e.changedTouches[0].screenX;
-      handleGesture();
-    }, false);
-  }
+    // Tambahkan listener untuk mendeteksi akhir sentuhan
+    modalImgWrap.addEventListener('touchend', e => {
+      touchendX = e.changedTouches[0].screenX;
+      handleGesture();
+    }, false);
+  }
 
-  function handleGesture() {
-    const diff = touchendX - touchstartX;
-    
-    if (Math.abs(diff) > SWIPE_THRESHOLD) {
-      if (diff < 0) {
-        // Swipe KIRI (Tampilkan gambar berikutnya)
-        slideImg(1); 
-      }
-      if (diff > 0) {
-        // Swipe KANAN (Tampilkan gambar sebelumnya)
-        slideImg(-1); 
-      }
-    }
-  }
-  // ===================================================================
-  // === AKHIR LOGIKA GALERI GAMBAR & SWIPE SENTUH BARU ===
-  // ===================================================================
+  function handleGesture() {
+    const diff = touchendX - touchstartX;
+    
+    if (Math.abs(diff) > SWIPE_THRESHOLD) {
+      if (diff < 0) {
+        // Swipe KIRI (Tampilkan gambar berikutnya)
+        slideImg(1); 
+      }
+      if (diff > 0) {
+        // Swipe KANAN (Tampilkan gambar sebelumnya)
+        slideImg(-1); 
+      }
+    }
+  }
+  // ===================================================================
+  // === AKHIR LOGIKA GALERI GAMBAR & SWIPE SENTUH BARU ===
+  // ===================================================================
 
-  modalClose.addEventListener('click', closeModal);
-  modalBackdrop.addEventListener('click', (e)=>{
-    if(e.target === modalBackdrop) closeModal();
-  });
+  modalClose.addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', (e)=>{
+    if(e.target === modalBackdrop) closeModal();
+  });
 
-  qtyMinus.addEventListener('click', ()=>{
-    if(currentQty>1) currentQty--;
-    qtyVal.innerText = currentQty;
-  });
-  qtyPlus.addEventListener('click', ()=>{
-    currentQty++;
-    qtyVal.innerText = currentQty;
-  });
+  qtyMinus.addEventListener('click', ()=>{
+    if(currentQty>1) currentQty--;
+    qtyVal.innerText = currentQty;
+  });
+  qtyPlus.addEventListener('click', ()=>{
+    currentQty++;
+    qtyVal.innerText = currentQty;
+  });
 
 // MODIFIED: Add to cart detailed: merge if same id+size+color
 function addToCartDetailed(item){
-    // Cek stok sebelum menambah
-    const product = PRODUCTS.find(p=>p.id===item.id);
-    // Cari data stok/harga dari sizeVariants
-    const sizeData = findSizeData(product, item.color, item.size); 
-    
-    // Ambil gambar spesifik dari warna yang dipilih
-    const colorData = product.colors.find(c => c.name === item.color);
-    const img = colorData ? colorData.image : product.thumbnail; 
-    
-    if (!sizeData || sizeData.stock === 0 || item.qty > sizeData.stock) {
-        alert('Gagal: Stok tidak tersedia atau melebihi batas stok.');
-        return false;
-    }
-    
-    // find existing
-    const idx = cart.findIndex(ci => ci.id === item.id && String(ci.size) === String(item.size) && ci.color === item.color);
-    if(idx >= 0){
-        // Jika item sudah ada, cek apakah total qty melebihi stok
-        if (cart[idx].qty + item.qty > sizeData.stock) {
-            alert(`Gagal: Menambahkan ${item.qty} lagi akan melebihi batas stok (${sizeData.stock}).`);
-            return false;
-        }
-        cart[idx].qty += item.qty;
-        cart[idx].subtotal = cart[idx].price * cart[idx].qty;
-    } else {
-        const newItem = {
-            id: item.id,
-            name: item.name,
-            price: sizeData.price, // PENTING: Ambil harga dari sizeData
-            img: img, 
-            size: item.size,
-            color: item.color,
-            qty: item.qty,
-            subtotal: sizeData.price * item.qty
-        };
-        cart.push(newItem);
-    }
-    saveCart();
-    renderCartDrawer();
-    updateCartCount();
-    return true;
+    // Cek stok sebelum menambah
+    const product = PRODUCTS.find(p=>p.id===item.id);
+    // Cari data stok/harga dari sizeVariants
+    const sizeData = findSizeData(product, item.color, item.size); 
+    
+    // Ambil gambar spesifik dari warna yang dipilih
+    const colorData = product.colors.find(c => c.name === item.color);
+    const img = colorData ? colorData.image : product.thumbnail; 
+    
+    if (!sizeData || sizeData.stock === 0 || item.qty > sizeData.stock) {
+        alert('Gagal: Stok tidak tersedia atau melebihi batas stok.');
+        return false;
+    }
+    
+    // find existing
+    const idx = cart.findIndex(ci => ci.id === item.id && String(ci.size) === String(item.size) && ci.color === item.color);
+    if(idx >= 0){
+        // Jika item sudah ada, cek apakah total qty melebihi stok
+        if (cart[idx].qty + item.qty > sizeData.stock) {
+            alert(`Gagal: Menambahkan ${item.qty} lagi akan melebihi batas stok (${sizeData.stock}).`);
+            return false;
+        }
+        cart[idx].qty += item.qty;
+        cart[idx].subtotal = cart[idx].price * cart[idx].qty;
+    } else {
+        const newItem = {
+            id: item.id,
+            name: item.name,
+            price: sizeData.price, // PENTING: Ambil harga dari sizeData
+            img: img, 
+            size: item.size,
+            color: item.color,
+            qty: item.qty,
+            subtotal: sizeData.price * item.qty
+        };
+        cart.push(newItem);
+    }
+    saveCart();
+    renderCartDrawer();
+    updateCartCount();
+    return true;
 }
 
 // MODIFIED: Add to cart from modal
 modalAdd.addEventListener('click', ()=>{
-    // Cek currentSelectedSizeData karena dia menyimpan data harga dan stok
-    if(!currentProduct || !currentSelectedSizeData || !currentSelectedColor) { 
-        alert('Pilih ukuran dan warna terlebih dahulu.');
-        return;
-    }
-    if (currentSelectedSizeData.stock === 0) {
-        alert('Stok habis untuk varian ini.');
-        return;
-    }
-    if (addToCartDetailed({
-        id: currentProduct.id,
-        name: currentProduct.name,
-        price: currentSelectedSizeData.price, // Harga diambil dari data ukuran
-        size: currentSelectedSize,
-        color: currentSelectedColor.name, // Warna diambil dari currentSelectedColor
-        qty: currentQty
-    })) {
-        showToast(`${currentProduct.name} (${currentSelectedColor.name}, size ${currentSelectedSize}) ditambahkan.`);
-        closeModal();
-        openCart(); 
-    }
+    // Cek currentSelectedSizeData karena dia menyimpan data harga dan stok
+    if(!currentProduct || !currentSelectedSizeData || !currentSelectedColor) { 
+        alert('Pilih ukuran dan warna terlebih dahulu.');
+        return;
+    }
+    if (currentSelectedSizeData.stock === 0) {
+        alert('Stok habis untuk varian ini.');
+        return;
+    }
+    if (addToCartDetailed({
+        id: currentProduct.id,
+        name: currentProduct.name,
+        price: currentSelectedSizeData.price, // Harga diambil dari data ukuran
+        size: currentSelectedSize,
+        color: currentSelectedColor.name, // Warna diambil dari currentSelectedColor
+        qty: currentQty
+    })) {
+        showToast(`${currentProduct.name} (${currentSelectedColor.name}, size ${currentSelectedSize}) ditambahkan.`);
+        closeModal();
+        openCart(); 
+    }
 });
 
-// MODIFIED: modalBuy (similar changes)
+// ===================================================================
+// START MODIFIED LOGIC: MODAL BUY (Beli Sekarang) -> WA
+// ===================================================================
 modalBuy.addEventListener('click', ()=>{
     if(!currentProduct || !currentSelectedSizeData || !currentSelectedColor) {
         alert('Pilih ukuran dan warna terlebih dahulu.');
@@ -1207,181 +1255,190 @@ modalBuy.addEventListener('click', ()=>{
         alert('Stok habis untuk varian ini.');
         return;
     }
-    if (addToCartDetailed({
-        id: currentProduct.id,
-        name: currentProduct.name,
-        price: currentSelectedSizeData.price, 
-        size: currentSelectedSize,
-        color: currentSelectedColor.name, 
-        qty: currentQty
-    })) {
-        closeModal();
-        openCart();
-        alert('Checkout simulasi: Terima kasih, pesanan ditambahkan. Lanjut ke pembayaran (simulasi).');
-    }
-});
 
+    // 1. Prepare item data (single item)
+    const singleItem = {
+        name: currentProduct.name,
+        color: currentSelectedColor.name,
+        size: currentSelectedSize,
+        qty: currentQty,
+        price: currentSelectedSizeData.price
+    };
+    
+    // 2. Generate WhatsApp link for this single item and redirect
+    const waLink = generateWhatsAppLink([singleItem], true);
+    window.open(waLink, '_blank');
+    
+    showToast(`Dialihkan ke WhatsApp untuk pemesanan ${currentProduct.name} (Qty ${currentQty}).`);
+    closeModal();
+});
+// ===================================================================
+// END MODIFIED LOGIC: MODAL BUY (Beli Sekarang) -> WA
+// ===================================================================
 
 
 // cart drawer UI (UPDATED: Added Detail Produk button)
 function renderCartDrawer(){
-  cartItemsWrap.innerHTML = "";
-  if(cart.length === 0){
-    cartItemsWrap.innerHTML = `<div class="cart-empty">Keranjang kosong.</div>`;
-    cartTotalEl.innerText = fmt(0);
-    return;
-  }
-  let total = 0;
-  cart.forEach((ci, i)=>{
-    total += ci.subtotal;
-    const el = document.createElement('div');
-    el.className = 'cart-item';
-    el.innerHTML = `
-      <div class="ci-thumb"><img src="${ci.img}" alt="${ci.name}"></div>
-      <div class="ci-meta">
-        <div class="name">${ci.name}</div>
-        <div class="meta">Warna: ${ci.color} · Ukuran: ${ci.size}</div>
-        <div class="meta subtotal">Subtotal: ${fmt(ci.subtotal)}</div>
-        <button class="btn-ghost small" data-action="detail" data-id="${ci.id}">Tentang Produk ini: Detail</button>
-      </div>
-      <div class="ci-actions">
-        <div class="qty-controls">
-          <button class="btn-ghost small" data-action="minus" data-index="${i}">−</button>
-          <div style="min-width:28px;text-align:center">${ci.qty}</div>
-          <button class="btn-ghost small" data-action="plus" data-index="${i}">+</button>
-        </div>
-        <button class="btn-ghost" data-action="remove" data-index="${i}">Hapus</button>
-      </div>
-    `;
-    cartItemsWrap.appendChild(el);
-  });
-  cartTotalEl.innerText = fmt(total);
-  // attach handlers for qty and remove
-  cartItemsWrap.querySelectorAll('[data-action]').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const idx = Number(btn.dataset.index);
-      const action = btn.dataset.action;
-      
-      if(action === 'detail'){
-        closeCart(); // Tutup keranjang
-        openModal(Number(btn.dataset.id)); // Buka drawer detail produk
-        return;
-      }
+  cartItemsWrap.innerHTML = "";
+  if(cart.length === 0){
+    cartItemsWrap.innerHTML = `<div class="cart-empty">Keranjang kosong.</div>`;
+    cartTotalEl.innerText = fmt(0);
+    return;
+  }
+  let total = 0;
+  cart.forEach((ci, i)=>{
+    total += ci.subtotal;
+    const el = document.createElement('div');
+    el.className = 'cart-item';
+    el.innerHTML = `
+      <div class="ci-thumb"><img src="${ci.img}" alt="${ci.name}"></div>
+      <div class="ci-meta">
+        <div class="name">${ci.name}</div>
+        <div class="meta">Warna: ${ci.color} · Ukuran: ${ci.size}</div>
+        <div class="meta subtotal">Subtotal: ${fmt(ci.subtotal)}</div>
+        <button class="btn-ghost small" data-action="detail" data-id="${ci.id}">Tentang Produk ini: Detail</button>
+      </div>
+      <div class="ci-actions">
+        <div class="qty-controls">
+          <button class="btn-ghost small" data-action="minus" data-index="${i}">−</button>
+          <div style="min-width:28px;text-align:center">${ci.qty}</div>
+          <button class="btn-ghost small" data-action="plus" data-index="${i}">+</button>
+        </div>
+        <button class="btn-ghost" data-action="remove" data-index="${i}">Hapus</button>
+      </div>
+    `;
+    cartItemsWrap.appendChild(el);
+  });
+  cartTotalEl.innerText = fmt(total);
+  // attach handlers for qty and remove
+  cartItemsWrap.querySelectorAll('[data-action]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const idx = Number(btn.dataset.index);
+      const action = btn.dataset.action;
+      
+      if(action === 'detail'){
+        closeCart(); // Tutup keranjang
+        openModal(Number(btn.dataset.id)); // Buka drawer detail produk
+        return;
+      }
 
-      // Logic for +/-/remove (with stock check for +/-)
-      if(action === 'minus'){
-        if(cart[idx].qty > 1) cart[idx].qty--;
-        else {
-          cart.splice(idx,1);
-        }
-      } else if(action === 'plus'){
-          // Re-check stock before adding
-          const product = PRODUCTS.find(p => p.id === cart[idx].id);
-          // findSizeData sekarang menggunakan sizeVariants
-          const sizeData = findSizeData(product, cart[idx].color, cart[idx].size); 
-          if (sizeData && cart[idx].qty < sizeData.stock) {
-              cart[idx].qty++;
-          } else if (sizeData) {
-              alert('Stok maksimum telah tercapai.');
-          }
-      } else if(action === 'remove'){
-        cart.splice(idx,1);
-      }
-      
-      // recalc subtotals
-      cart.forEach(ci=>ci.subtotal = ci.price * ci.qty);
-      saveCart();
-      renderCartDrawer();
-      updateCartCount();
-    });
-  });
+      // Logic for +/-/remove (with stock check for +/-)
+      if(action === 'minus'){
+        if(cart[idx].qty > 1) cart[idx].qty--;
+        else {
+          cart.splice(idx,1);
+        }
+      } else if(action === 'plus'){
+          // Re-check stock before adding
+          const product = PRODUCTS.find(p => p.id === cart[idx].id);
+          // findSizeData sekarang menggunakan sizeVariants
+          const sizeData = findSizeData(product, cart[idx].color, cart[idx].size); 
+          if (sizeData && cart[idx].qty < sizeData.stock) {
+              cart[idx].qty++;
+          } else if (sizeData) {
+              alert('Stok maksimum telah tercapai.');
+          }
+      } else if(action === 'remove'){
+        cart.splice(idx,1);
+      }
+      
+      // recalc subtotals
+      cart.forEach(ci=>ci.subtotal = ci.price * ci.qty);
+      saveCart();
+      renderCartDrawer();
+      updateCartCount();
+    });
+  });
 }
 
 function updateCartCount(){
-  const count = cart.reduce((a,b)=>a + b.qty, 0);
-  cartCount.innerText = count;
+  const count = cart.reduce((a,b)=>a + b.qty, 0);
+  cartCount.innerText = count;
 }
 
 function openCart(){
-  cartDrawer.classList.add('open');
-  cartDrawer.setAttribute('aria-hidden','false');
-  renderCartDrawer();
+  cartDrawer.classList.add('open');
+  cartDrawer.setAttribute('aria-hidden','false');
+  renderCartDrawer();
 }
 function closeCart(){
-  cartDrawer.classList.remove('open');
-  cartDrawer.setAttribute('aria-hidden','true');
+  cartDrawer.classList.remove('open');
+  cartDrawer.setAttribute('aria-hidden','true');
 }
 
 cartBtn.addEventListener('click', ()=>{
-  closeModal(); // Pastikan drawer detail tertutup saat membuka keranjang
-  openCart();
+  closeModal(); // Pastikan drawer detail tertutup saat membuka keranjang
+  openCart();
 });
 closeCartBtn.addEventListener('click', closeCart);
 closeCartBtn2.addEventListener('click', closeCart);
 clearCartBtn.addEventListener('click', ()=>{
-  if(confirm('Bersihkan keranjang?')) {
-    cart = [];
-    saveCart();
-    renderCartDrawer();
-    updateCartCount();
-  }
+  if(confirm('Bersihkan keranjang?')) {
+    cart = [];
+    saveCart();
+    renderCartDrawer();
+    updateCartCount();
+  }
 });
 
+// ===================================================================
+// START MODIFIED LOGIC: CHECKOUT BUTTON -> WA
+// ===================================================================
 checkoutBtn.addEventListener('click', ()=>{
-  if(cart.length === 0){
-    alert('Keranjang kosong.');
-    return;
-  }
-  // simulate checkout
-  let text = "Checkout simulasi:\n\n";
-  let total = 0;
-  cart.forEach(ci=>{
-    text += `${ci.name} | ${ci.color} | size ${ci.size} × ${ci.qty} — ${fmt(ci.subtotal)}\n`;
-    total += ci.subtotal;
-  });
-  text += `\nTotal: ${fmt(total)}\n\nOK untuk konfirmasi (simulasi)?`;
-  if(confirm(text)){
-    alert('Terima kasih! Pesanan terkonfirmasi (simulasi).');
+    if(cart.length === 0){
+        alert('Keranjang kosong.');
+        return;
+    }
+    
+    // Generate WhatsApp link and redirect
+    const waLink = generateWhatsAppLink(cart);
+    window.open(waLink, '_blank');
+
+    showToast('Dialihkan ke WhatsApp untuk konfirmasi pesanan.');
+
+    // Clear cart after successful redirection (assumption: user will complete purchase via WA)
     cart = [];
     saveCart();
     renderCartDrawer();
     updateCartCount();
     closeCart();
-  }
 });
+// ===================================================================
+// END MODIFIED LOGIC: CHECKOUT BUTTON -> WA
+// ===================================================================
 
 // util format currency
 function fmt(n){
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits:0 }).format(n);
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits:0 }).format(n);
 }
 
 // small toast
 function showToast(message){
-  const t = document.createElement('div');
-  t.style.position='fixed';
-  t.style.right='20px';
-  t.style.bottom='20px';
-  t.style.background='linear-gradient(90deg,var(--blue),var(--purple))';
-  t.style.color='var(--dark)';
-  t.style.padding='10px 14px';
-  t.style.borderRadius='10px';
-  t.style.boxShadow='0 10px 30px rgba(0,0,0,0.6)';
-  t.style.zIndex=9999;
-  t.style.transition='opacity 0.5s ease';
-  t.innerText = message;
-  document.body.appendChild(t);
-  setTimeout(()=> t.style.opacity='0', 1600);
-  setTimeout(()=> t.remove(), 2200);
+  const t = document.createElement('div');
+  t.style.position='fixed';
+  t.style.right='20px';
+  t.style.bottom='20px';
+  t.style.background='linear-gradient(90deg,var(--blue),var(--purple))';
+  t.style.color='var(--dark)';
+  t.style.padding='10px 14px';
+  t.style.borderRadius='10px';
+  t.style.boxShadow='0 10px 30px rgba(0,0,0,0.6)';
+  t.style.zIndex=9999;
+  t.style.transition='opacity 0.5s ease';
+  t.innerText = message;
+  document.body.appendChild(t);
+  setTimeout(()=> t.style.opacity='0', 1600);
+  setTimeout(()=> t.remove(), 2200);
 }
 
 // initial render
 function init(){
-  loadCart();
-  renderProducts(PRODUCTS);
-  renderCartDrawer();
-  updateCartCount();
-  document.getElementById('year').innerText = new Date().getFullYear();
-  applyFilters();
+  loadCart();
+  renderProducts(PRODUCTS);
+  renderCartDrawer();
+  updateCartCount();
+  document.getElementById('year').innerText = new Date().getFullYear();
+  applyFilters();
 }
 
 init();
