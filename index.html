@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vebronia FlatShoes — Toko Sepatu</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="image/logo vebronia.png" alt="Vebronia logo">
+    <div>
+      <div class="brand">Vebroni FlatShoes</div>
+      <div style="font-size:0.78rem;opacity:0.7">Modern · Nyaman · Lucu</div>
+    </div>
+  </div>
+
+  <nav>
+    <div class="search" role="search" aria-label="Cari produk">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:0.9">
+        <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <input id="search" placeholder="Cari sepatu, brand, warna..." />
+    </div>
+    
+    <button class="cart-btn" id="cartBtn" aria-haspopup="dialog" title="Buka keranjang">
+      <img src="image/favicon.ico" alt="Ikon Keranjang" id="cartIcon"> 
+      <span class="cart-text">Keranjang</span> 
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-card">
+    <div class="hero-content">
+      <h1>Sepatu Stylish. Nyaman. Modern.</h1>
+      <p>Nikmati koleksi sepatu terbaru kami — desain modern dengan kenyamanan premium. Pilih warna aurora favoritmu dan rasakan sentuhan nyaman saat melangkah.</p>
+      <button class="cta" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Lihat Koleksi</button>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <img src="image/visual.jpg" alt="Vebronia visual">
+    </div>
+  </div>
+</section>
+
+<main class="container" id="products">
+  <h2 style="color:var(--cyan); margin:6px 0 0 0">Koleksi Terlaris</h2>
+  <p style="opacity:0.85">Pilih kategori, ukuran, atau rentang harga untuk mempersempit pilihan.</p>
+
+  <div class="controls" role="region" aria-label="Filter produk">
+    <div class="control" style="min-width:160px">
+      <label for="category">Kategori</label>
+      <select id="category">
+        <option value="all">Semua</option>
+        <option value="hasya">Hasya</option>
+        <option value="walcoo">Walcoo</option>
+        <option value="zalsa">Zalsa Flag Ship</option>
+        <option value="halona">Halona</option>
+        <option value="byonc">Byonc</option>
+        <option value="sakaki">Sakaki</option>
+        <option value="yara">Yara Footwear</option>
+        <option value="joana">Joana</option>
+        <option value="locha">Locha Collection</option>
+        <option value="navisa">Navisa Basic Collection</option>
+        <option value="cheung">Cheung Kuedz</option>
+        <option value="elisa">Faduzzi ELISA</option>
+        <option value="urban">Urban&co Mary jane</option>
+        <option value="estunice">Estunice Alexa</option>
+        <option value="erakino">Erakino</option>
+        <option value="misoka">Misoka</option>
+        <option value="restories">ReStories</option>
+        <option value="valendino">Valendino</option>
+        <option value="mokaya">Mokaya</option>
+        <option value="dfzena">DF Zena</option>
+      </select>
+    </div>
+
+    <div class="control">
+      <label>Ukuran</label>
+      <div class="sizes" id="sizeFilters">
+        </div>
+    </div>
+
+    <div class="control" style="min-width:220px">
+      <label for="priceRange">Harga (max)</label>
+      <input type="range" id="priceRange" min="35000" max="200000" step="35000" value="200000">
+      <div style="font-size:0.9rem;margin-top:6px" id="priceLabel">Sampai: —</div>
+    </div>
+
+    <div class="control" style="margin-left:auto">
+      <label>&nbsp;</label>
+      <button id="resetFilters" class="btn-ghost">Reset Filter</button>
+    </div>
+  </div>
+
+  <div class="grid" id="productGrid"></div>
+</main>
+
+<div class="cart-drawer" id="cartDrawer" aria-hidden="true">
+  <div class="cart-header">
+    <div style="font-weight:700;color:var(--cyan)">Keranjang Belanja</div>
+    <div>
+      <button class="btn-ghost" id="clearCartBtn">Bersihkan</button>
+      <button class="btn-ghost" id="closeCartBtn">Tutup</button>
+    </div>
+  </div>
+
+  <div class="cart-items" id="cartItems">
+    </div>
+
+  <div class="cart-footer">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-weight:700">Total</div>
+      <div id="cartTotal" style="font-weight:800;color:var(--cyan)">IDR 0</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" id="checkoutBtn">Checkout</button>
+      <button class="btn-ghost" id="closeCartBtn2">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © <span id="year"></span> Vebronia FlatShoes — Semua Hak Dilindungi
+</footer>
+
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" id="modalEl" role="document" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose">✕</button>
+    
+    <div class="modal-thumb" id="modalImgWrap"></div> 
+    
+    <div style="position:relative">
+      <h3 id="modalTitle">Nama Produk</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div class="price" id="modalPrice">IDR 0</div>
+        <div style="opacity:0.9" id="modalCat">Kategori</div>
+      </div>
+      
+      <div id="modalStock" style="margin-top:4px;font-size:0.95rem;font-weight:600;">—</div> 
+
+      <div style="display:flex;gap:10px;margin-top:16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <button id="modalDescTab" class="btn-ghost selected" style="border:0;border-bottom:2px solid var(--cyan);border-radius:0;padding:8px 0;font-weight:700" onclick="setActiveTab(this, modalDesc)">Deskripsi</button>
+        <button id="modalDetailTab" class="btn-ghost" style="border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 0;font-weight:600" onclick="setActiveTab(this, modalDetail)">Detail Produk</button>
+        <button id="modalGuideTab" class="btn-ghost" style="border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 0;font-weight:600" onclick="setActiveTab(this, modalGuide)">Panduan Ukuran</button>
+      </div>
+
+      <div style="margin-top:10px;line-height:1.4;color:var(--gold);opacity:0.95;max-height:140px;overflow-y:auto;padding-right:10px">
+        <p id="modalDesc" style="margin:0"></p> 
+        <p id="modalDetail" style="margin:0;display:none;white-space:pre-wrap;"></p> 
+        <p id="modalGuide" style="margin:0;display:none;white-space:pre-wrap;"></p> 
+      </div>
+      
+      <div style="margin-top:12px">
+        <div style="font-weight:700;margin-bottom:6px">Varian Warna</div>
+        <div class="variants" id="modalColors"></div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div style="font-weight:700;margin-bottom:6px">Pilih Ukuran</div>
+        <div class="size-select" id="modalSizes"></div>
+      </div>
+
+      <div class="qty-row">
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn-ghost" id="qtyMinus">−</button>
+          <div id="qtyVal" style="min-width:28px;text-align:center;font-weight:700">1</div>
+          <button class="btn-ghost" id="qtyPlus">+</button>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn-primary" id="modalAdd">Tambah ke Keranjang</button>
+          <button class="btn-ghost" id="modalBuy">Beli Sekarang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script> 
+
+<a href="https://wa.me/6282146502145" target="_blank" style="position:fixed;bottom:20px;right:20px;width:50px;height:50px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.3);z-index:1000">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:28px;height:28px;">
+</a>
+
+</body>
+</html>
