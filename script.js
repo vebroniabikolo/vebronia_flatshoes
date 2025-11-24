@@ -722,30 +722,30 @@ let cart = [];
 // ===================================================================
 
 function generateWhatsAppLink(cartItems, isSingleItem = false) {
-    let message = isSingleItem ? 
-        "Halo, saya ingin memesan produk berikut:\n\n" : 
-        "Halo Vebronia, saya ingin melakukan checkout pesanan dengan rincian:\n\n";
-    let total = 0;
+    let message = isSingleItem ? 
+        "Halo, saya ingin memesan produk berikut:\n\n" : 
+        "Halo Vebronia, saya ingin melakukan checkout pesanan dengan rincian:\n\n";
+    let total = 0;
 
-    cartItems.forEach((item, index) => {
-        // Harga (ci.price) sudah tersedia di item keranjang/single item
-        const itemPrice = item.price || item.subtotal / item.qty;
-        const subtotal = item.qty * itemPrice;
-        total += subtotal;
+    cartItems.forEach((item, index) => {
+        // Harga (ci.price) sudah tersedia di item keranjang/single item
+        const itemPrice = item.price || item.subtotal / item.qty;
+        const subtotal = item.qty * itemPrice;
+        total += subtotal;
 
-        message += `${index + 1}. *${item.name}* (${item.color}) - Size ${item.size}\n`;
-        message += `   Qty: ${item.qty} × ${fmt(itemPrice)}\n`; 
-        message += `   Subtotal: ${fmt(subtotal)}\n`;
-    });
+        message += `${index + 1}. *${item.name}* (${item.color}) - Size ${item.size}\n`;
+        message += `   Qty: ${item.qty} × ${fmt(itemPrice)}\n`; 
+        message += `   Subtotal: ${fmt(subtotal)}\n`;
+    });
 
-    if (!isSingleItem) {
-        message += `\n--- Total Pesanan: ${fmt(total)} ---\n`;
-        message += "\nMohon konfirmasi ketersediaan stok, total pembayaran, dan ongkos kirim. Terima kasih.";
-    } else {
-        message += "\nMohon konfirmasi ketersediaan stok, total harga, dan ongkos kirim. Terima kasih.";
-    }
+    if (!isSingleItem) {
+        message += `\n--- Total Pesanan: ${fmt(total)} ---\n`;
+        message += "\nMohon konfirmasi ketersediaan stok, total pembayaran, dan ongkos kirim. Terima kasih.";
+    } else {
+        message += "\nMohon konfirmasi ketersediaan stok, total harga, dan ongkos kirim. Terima kasih.";
+    }
 
-    return `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 // load cart from localStorage if present
@@ -1112,15 +1112,15 @@ function closeModal(){
     // NOTE: modalImgWrap seharusnya hanya menjadi container
     const scroller = document.getElementById('modalImageScroller');
     if(scroller) {
-        const offset = currentImgIndex * scroller.offsetWidth;
-        scroller.scrollLeft = offset;
+        const offset = currentImgIndex * scroller.offsetWidth;
+        scroller.scrollLeft = offset;
     }
     // Update warna terpilih agar sinkron dengan gambar
     if(currentProduct && currentProduct.colors[currentImgIndex]) {
-        currentSelectedColor = currentProduct.colors[currentImgIndex];
-        document.querySelectorAll('.color-swatch').forEach(n=>n.classList.remove('selected'));
-        const selectedSwatch = document.querySelector(`.color-swatch[data-color="${currentSelectedColor.name}"]`);
-        if (selectedSwatch) selectedSwatch.classList.add('selected');
+        currentSelectedColor = currentProduct.colors[currentImgIndex];
+        document.querySelectorAll('.color-swatch').forEach(n=>n.classList.remove('selected'));
+        const selectedSwatch = document.querySelector(`.color-swatch[data-color="${currentSelectedColor.name}"]`);
+        if (selectedSwatch) selectedSwatch.classList.add('selected');
     }
   }
 
@@ -1130,8 +1130,8 @@ function closeModal(){
   if (modalImgWrap) { // Use modalImgWrap as the touch listener container
     modalImgWrap.addEventListener('touchstart', e => {
       touchstartX = e.changedTouches[0].screenX;
-      // Perbarui currentImages di sini
-      currentImages = Array.from(modalImgWrap.querySelector('#modalImageScroller')?.children || []);
+      // Perbarui currentImages di sini
+      currentImages = Array.from(modalImgWrap.querySelector('#modalImageScroller')?.children || []);
     }, false);
 
     // Tambahkan listener untuk mendeteksi akhir sentuhan
@@ -1247,30 +1247,30 @@ modalAdd.addEventListener('click', ()=>{
 // START MODIFIED LOGIC: MODAL BUY (Beli Sekarang) -> WA
 // ===================================================================
 modalBuy.addEventListener('click', ()=>{
-    if(!currentProduct || !currentSelectedSizeData || !currentSelectedColor) {
-        alert('Pilih ukuran dan warna terlebih dahulu.');
-        return;
-    }
-    if (currentSelectedSizeData.stock === 0) {
-        alert('Stok habis untuk varian ini.');
-        return;
-    }
+    if(!currentProduct || !currentSelectedSizeData || !currentSelectedColor) {
+        alert('Pilih ukuran dan warna terlebih dahulu.');
+        return;
+    }
+    if (currentSelectedSizeData.stock === 0) {
+        alert('Stok habis untuk varian ini.');
+        return;
+    }
 
-    // 1. Prepare item data (single item)
-    const singleItem = {
-        name: currentProduct.name,
-        color: currentSelectedColor.name,
-        size: currentSelectedSize,
-        qty: currentQty,
-        price: currentSelectedSizeData.price
-    };
-    
-    // 2. Generate WhatsApp link for this single item and redirect
-    const waLink = generateWhatsAppLink([singleItem], true);
-    window.open(waLink, '_blank');
-    
-    showToast(`Dialihkan ke WhatsApp untuk pemesanan ${currentProduct.name} (Qty ${currentQty}).`);
-    closeModal();
+    // 1. Prepare item data (single item)
+    const singleItem = {
+        name: currentProduct.name,
+        color: currentSelectedColor.name,
+        size: currentSelectedSize,
+        qty: currentQty,
+        price: currentSelectedSizeData.price
+    };
+    
+    // 2. Generate WhatsApp link for this single item and redirect
+    const waLink = generateWhatsAppLink([singleItem], true);
+    window.open(waLink, '_blank');
+    
+    showToast(`Dialihkan ke WhatsApp untuk pemesanan ${currentProduct.name} (Qty ${currentQty}).`);
+    closeModal();
 });
 // ===================================================================
 // END MODIFIED LOGIC: MODAL BUY (Beli Sekarang) -> WA
@@ -1385,23 +1385,23 @@ clearCartBtn.addEventListener('click', ()=>{
 // START MODIFIED LOGIC: CHECKOUT BUTTON -> WA
 // ===================================================================
 checkoutBtn.addEventListener('click', ()=>{
-    if(cart.length === 0){
-        alert('Keranjang kosong.');
-        return;
-    }
-    
-    // Generate WhatsApp link and redirect
-    const waLink = generateWhatsAppLink(cart);
-    window.open(waLink, '_blank');
+    if(cart.length === 0){
+        alert('Keranjang kosong.');
+        return;
+    }
+    
+    // Generate WhatsApp link and redirect
+    const waLink = generateWhatsAppLink(cart);
+    window.open(waLink, '_blank');
 
-    showToast('Dialihkan ke WhatsApp untuk konfirmasi pesanan.');
+    showToast('Dialihkan ke WhatsApp untuk konfirmasi pesanan.');
 
-    // Clear cart after successful redirection (assumption: user will complete purchase via WA)
-    cart = [];
-    saveCart();
-    renderCartDrawer();
-    updateCartCount();
-    closeCart();
+    // Clear cart after successful redirection (assumption: user will complete purchase via WA)
+    cart = [];
+    saveCart();
+    renderCartDrawer();
+    updateCartCount();
+    closeCart();
 });
 // ===================================================================
 // END MODIFIED LOGIC: CHECKOUT BUTTON -> WA
@@ -1442,4 +1442,3 @@ function init(){
 }
 
 init();
-
