@@ -640,7 +640,7 @@ const PRODUCTS = [
   },
 ];
 
-const ADMIN_WA_NUMBER = "6282146502146"; 
+const ADMIN_WA_NUMBER = "6282146502145"; 
 
 // cart state: array of {id,name,price,color,size,qty,subtotal,img}
 let cart = [];
@@ -1442,3 +1442,4 @@ function init(){
 }
 
 init();
+
