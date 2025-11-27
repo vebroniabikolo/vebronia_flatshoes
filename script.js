@@ -729,12 +729,12 @@ function generateWhatsAppLink(cartItems, isSingleItem = false) {
 
     cartItems.forEach((item, index) => {
         // Harga (ci.price) sudah tersedia di item keranjang/single item
-        const itemPrice = item.price || item.subtotal / item.qty;
-        const subtotal = item.qty * itemPrice;
+        const itemPrice = item.price || item.subtotal / item.jumlah;
+        const subtotal = item.jumlah * itemPrice;
         total += subtotal;
 
         message += `${index + 1}. *${item.name}* (${item.color}) - Size ${item.size}\n`;
-        message += `   Jumlah: ${item.qty} × ${fmt(itemPrice)}\n`; 
+        message += `   Jumlah: ${item.jumlah} × ${fmt(itemPrice)}\n`; 
         message += `   Subtotal: ${fmt(subtotal)}\n`;
     });
 
@@ -1442,4 +1442,5 @@ function init(){
 }
 
 init();
+
 
