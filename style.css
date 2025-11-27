@@ -42,7 +42,7 @@ nav{display:flex;gap:18px;align-items:center}
 .search{display:flex;align-items:center;gap:8px;background:var(--glass);padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
 .search input{background:transparent;border:0;outline:none;color:var(--gold);width:200px;font-size:0.95rem}
 
-.cart-btn{position:relative;background:transparent;color:var(--dark);border:0;padding:8px 12px;border-radius:10px;cursor:pointer;box-shadow:0 6px 15px rgba(121,194,233,0.12)}
+.cart-btn{position:relative;background:transparent;color:var(--dark);border:0;padding:6px 10px;border-radius:5px;cursor:pointer;box-shadow:0 6px 15px rgba(121,194,233,0.12)}
 .cart-count{position:absolute;top:-6px;right:-6px;background:var(--cyan);color:var(--dark);font-weight:700;font-size:0.75rem;padding:4px 6px;border-radius:10px;box-shadow:0 6px 18px rgba(166,255,248,0.08)}
 
 .hero{display:grid;grid-template-columns: 1fr;align-items:center;gap:20px;padding:48px 24px;max-width:1200px;margin:18px auto}
@@ -225,4 +225,5 @@ footer{margin-top:36px;padding:28px 20px;text-align:center;color:var(--gold);opa
   .modal{padding:12px}
   .modal .modal-thumb { height: 200px; }
 }
+
 
