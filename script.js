@@ -734,7 +734,7 @@ function generateWhatsAppLink(cartItems, isSingleItem = false) {
         total += subtotal;
 
         message += `${index + 1}. *${item.name}* (${item.color}) - Size ${item.size}\n`;
-        message += `   Qty: ${item.qty} × ${fmt(itemPrice)}\n`; 
+        message += `   Jumlah: ${item.qty} × ${fmt(itemPrice)}\n`; 
         message += `   Subtotal: ${fmt(subtotal)}\n`;
     });
 
@@ -1442,3 +1442,4 @@ function init(){
 }
 
 init();
+
